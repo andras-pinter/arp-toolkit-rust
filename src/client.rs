@@ -169,7 +169,7 @@ impl ArpClient {
                         Err(_) => {}
                     }
                 }
-                _ => {}
+                _ => return None
             }
         }
     }

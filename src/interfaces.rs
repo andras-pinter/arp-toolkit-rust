@@ -55,7 +55,11 @@ impl Interface {
 
     /// Creates and returns a new Ethernet (tx, rx) channel pair on the interface.
     pub fn create_tx_rx_channels(&self) -> Result<(Box<dyn DataLinkSender>, Box<dyn DataLinkReceiver>), Error> {
-        match channel(&self.get_raw_interface(), Default::default()) {
+        let config = pnet::datalink::Config {
+            read_timeout: Some(std::time::Duration::ZERO),
+            ..Default::default()
+        };
+        match channel(&self.get_raw_interface(), config) {
             Ok(Channel::Ethernet(tx, rx)) => Ok((tx, rx)),
             Ok(_) => return Err(Error::new(ErrorKind::Other, "Unknown channel type")),
             Err(err) => return Err(err),
